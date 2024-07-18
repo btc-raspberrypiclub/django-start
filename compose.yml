@@ -1,0 +1,41 @@
+x-common-variables: &common-variables
+  POSTGRES_PASSWORD: supersecretpassword
+  POSTGRES_USER: siteuser
+  POSTGRES_DB: webeginedatabase
+  POSTGRES_HOST: db
+  POSTGRES_PORT: 5432
+  DATABASE_URL: psql://siteuser:supersecretpassword@db:5432/webeginedatabase
+
+
+services:
+
+  webengine:
+    image: webengine
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    entrypoint: ["start"]
+    command: ""
+    depends_on:
+      - db
+    volumes:
+      - ./app:/usr/src/app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      <<: *common-variables
+
+  db:
+    image: postgres:alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: unless-stopped
+    environment:
+      <<: *common-variables
+
+
+
+volumes:
+
+  postgres_data:
