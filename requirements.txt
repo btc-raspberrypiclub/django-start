@@ -10,3 +10,4 @@ django-filer
 djangocms-text-ckeditor
 django-fsm<3
 django-debug-toolbar
+django-extensions
