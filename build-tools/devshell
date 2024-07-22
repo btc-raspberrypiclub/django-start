@@ -1,0 +1,5 @@
+#!/bin/sh
+
+docker compose run --rm -it -p 8080:8080 -v ${PWD}/app:/usr/src/app --entrypoint "bash $1 $2" webengine
+docker compose down
+sudo chown -R ${UID:-1000}:${GID:-1000} ${PWD}/app

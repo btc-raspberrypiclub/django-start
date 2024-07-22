@@ -1,0 +1,7 @@
+#!/bin/sh
+
+docker compose down
+docker volume rm cascadesteam_media
+docker volume rm cascadesteam_postgres_data
+rm -rf app/*
+rm -rf app/.gitignore
