@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Start the database container in the background
-docker compose up db -d
+# Start the containers with the development configuration, in the background
+docker compose -f develop.yml up -d
 
 # Start an interactive shell in the webengine container with the current directory mounted
-# ..include optional arguments such as create or start
-docker compose run --rm -it -p 8080:8080 -v ${PWD}/app:/usr/src/app --entrypoint "bash" webengine
+docker compose -f develop.yml exec webengine bash
 
 # Clean up after we are finished
-docker compose down
-sudo chown -R ${UID:-1000}:${GID:-1000} ${PWD}/app
+docker compose -f develop.yml exec webengine "chown -R ${UID:-1000}:${GID:-1000} /usr/src/app"
+
+# Shutdown everything
+docker compose -f develop.yml down
+
+git status
+echo "Don't forget to add any new files or changes to your git repository."

@@ -10,17 +10,17 @@ if [ -d "./app/webengine" ]; then
 fi
 
 # Start just the database container in the background
-docker compose up db -d
+docker compose -f develop.yml up db -d
 
 echo "Creating a new Django ${PROJECT_TYPE} project in ./app/webengine"
 case ${PROJECT_TYPE} in
   cms)
     # Create the project (Django CMS)
-    docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "djangocms webengine ." webengine
+    docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "djangocms webengine ." webengine
     ;;
   basic)
     # Create the project (basic Django)
-    docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "django-admin startproject webengine ." webengine
+    docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "django-admin startproject webengine ." webengine
     ;;
   *)
     echo "Please specify a valid project type: basic or cms"
@@ -28,26 +28,25 @@ case ${PROJECT_TYPE} in
     ;;
 esac
 
-# if [ $? -ne 0 ]; then
-#   echo "Error creating the project.  Exiting..."
-#   exit 1
-# fi
-
 # Set the owner of the new files to the current user
-docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "chown -R ${UID:-1000}:${GID:-1000} /usr/src/app" webengine 
+docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "chown -R ${UID:-1000}:${GID:-1000} /usr/src/app" webengine 
 
 echo "Copying extra, pre-configured, default settings and urls to the project..."
 cat ./build-tools/src/extra_settings.py >> ./app/webengine/settings.py
 cat ./build-tools/src/extra_urls.py >> ./app/webengine/urls.py
 
 # Run the database/code migrations
-docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "./manage.py migrate" webengine 
+docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "./manage.py migrate" webengine 
 
-# Create the superuser (will prompt the user for values - requires  `-it` flag)
-docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "./manage.py createsuperuser" -it webengine 
+# Build the new image
+docker compose -f develop.yml build webengine
 
-echo "Project created successfully.  Don't forget to add the new files to your git repository."
+# Run the develpment server in the background
+docker compose -f develop.yml up -d
 
-# Clean up after we are finished
-docker compose down
+# Create the superuser (will prompt the user for values)
+docker compose -f develop.yml exec webengine ./manage.py createsuperuser
 
+echo "Project and image created successfully."
+echo "You can now access the project at http://localhost:8000 - you can shut down your server with 'docker compose -f develop.yml down'"
+echo "Don't forget to add the new files to your git repository."
