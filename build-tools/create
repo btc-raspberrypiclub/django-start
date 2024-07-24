@@ -1,0 +1,53 @@
+#!/bin/bash
+
+PROJECT_TYPE=${1:-basic}
+
+
+# Only create the project if the files don't already exist
+if [ -d "./app/webengine" ]; then
+  echo "Project already exists in ./app/webengine.  Exiting..."
+  exit 1
+fi
+
+# Start just the database container in the background
+docker compose up db -d
+
+echo "Creating a new Django ${PROJECT_TYPE} project in ./app/webengine"
+case ${PROJECT_TYPE} in
+  cms)
+    # Create the project (Django CMS)
+    docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "djangocms webengine ." webengine
+    ;;
+  basic)
+    # Create the project (basic Django)
+    docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "django-admin startproject webengine ." webengine
+    ;;
+  *)
+    echo "Please specify a valid project type: basic or cms"
+    exit 1
+    ;;
+esac
+
+# if [ $? -ne 0 ]; then
+#   echo "Error creating the project.  Exiting..."
+#   exit 1
+# fi
+
+# Set the owner of the new files to the current user
+docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "chown -R ${UID:-1000}:${GID:-1000} /usr/src/app" webengine 
+
+echo "Copying extra, pre-configured, default settings and urls to the project..."
+cat ./build-tools/src/extra_settings.py >> ./app/webengine/settings.py
+cat ./build-tools/src/extra_urls.py >> ./app/webengine/urls.py
+
+# Run the database/code migrations
+docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "./manage.py migrate" webengine 
+
+# Create the superuser (will prompt the user for values - requires  `-it` flag)
+docker compose run --rm -v ${PWD}/app:/usr/src/app --entrypoint "./manage.py createsuperuser" -it webengine 
+
+echo "Project created successfully.  Don't forget to add the new files to your git repository."
+
+# Clean up after we are finished
+docker compose down
+
