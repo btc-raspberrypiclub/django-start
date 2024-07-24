@@ -1,0 +1,44 @@
+# Environment variables (don't fill in values here - use the .env file)
+x-common-variables: &common-variables
+  POSTGRES_PASSWORD: 
+  POSTGRES_USER: 
+  POSTGRES_DB: 
+  POSTGRES_HOST: 
+  POSTGRES_PORT: 
+  DATABASE_URL: 
+  DEBUG: 
+
+
+services:
+
+  # Web Engine - aka Django
+  webengine:
+    image: webengine
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      <<: *common-variables
+    volumes:
+      - media:/var/app/media
+      - ./app:/usr/src/app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  # Postgres database server to store content and other data
+  db:
+    image: postgres:alpine
+    environment:
+      <<: *common-variables
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: unless-stopped
+
+
+volumes:
+  # These should be externally created NAS volumes, but for testing we can use local volumes
+  postgres_data: {}
+  media: {}
