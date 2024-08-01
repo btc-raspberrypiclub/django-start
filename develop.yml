@@ -39,6 +39,5 @@ services:
 
 
 volumes:
-  # These should be externally created NAS volumes, but for testing we can use local volumes
   postgres_data: {}
   media: {}

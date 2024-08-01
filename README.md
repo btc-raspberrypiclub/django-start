@@ -11,7 +11,7 @@ Please feel free to contribute and comment!
 Assumptions:  
 
 - You are using a Linux-based development environment and have a working knowledge of the commands for using it.  This includes knowing what a reference to 'localhost' is etc. [Microsoft WSL](https://learn.microsoft.com/en-us/windows/wsl/install) is perfectly acceptable for this, but the instalation of that is not covered in this project.  
-- [Docker](https://docs.docker.com/get-docker/) is already installed and running in the development eenvironment - and you know how to use the basic commands.
+- [Docker](https://docs.docker.com/get-docker/) is already installed and running in the development environment - and you know how to use the basic commands.
 - Basic knowledge of [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and it's purpose as well as it being installed and available in the development environment that you will be using.
 - Basic understanding of web services and application development. See https://www.w3.org/TR/ws-arch/ for some details.
 
@@ -28,13 +28,13 @@ You will now see the base project files in your `mywebapp/` folder.
 
 ### Set Environment Variables
 
-Rename the supplied `.env_example` file to `.env` and edit the values to something more secure.  These values will overide the ones that are in the setup.py and other places.
+Copy the supplied `.env_example` file to `.env` and edit the values to something more secure.  These values will overide the ones that are in the setup.py and other places.
 
-    mv .env_example .env
+    cp .env_example .env
 
-The `.env` file is not tracked by Git, since it is specifically excluded via the `.gitignore` file.  This is because the values in this file include 'secrets' that you should never check in with your code.
+The `.env` file is not tracked by Git, since it is specifically excluded via the `.gitignore` file.  We do this because the values in this file include 'secrets' that you should never check in with your code.
 
-Feel free to leave the values as they are for now if you are just practicing, if you intend to deploy this project to a server that is available on the internet - you _will_ want to use more secure values.
+Feel free to leave the values as they are for now if you are just practicing, if you intend to deploy this project to a server that is available on the internet - you _will_ want to use more secure/custom values.
 
 ### Build The Image
 
@@ -42,13 +42,15 @@ Next, build the local image for your container using the supplied code:
 
     docker compose build
 
+This step is very important and you wil lperform it many times as you develop your project.  Without the "build" step, the container image will not be up to date.
+
 ### Generate The Basic Site Filesystem
 
 We have a few options here, depending on what our end goal is. Starting with an empty `./app` directory (default) choose one of the following:
 
 - Create your project by simply bringing up the stack:
 
-    ```docker compose up -d```
+    ```build-tools/devshell create```
 
     After a few moments, you will see files show up in the `./app` directory.
 
@@ -197,7 +199,7 @@ Add the following to the bottom of your `urls.py` file:
 
 Suggested options (to be detailed soon) including general CI/CD and collaberation:
 
-- detail both [gunicorn](https://gunicorn.org/) (implement a prefork worker model http service)
+- detail [gunicorn](https://gunicorn.org/) (implement a prefork worker model http service)
 - adding some good applications for any/most projects, such as:
   - Django REST
   - Django Extensions
@@ -209,3 +211,8 @@ Suggested options (to be detailed soon) including general CI/CD and collaberatio
 - setup your repo for Pull Requests and external collaberation with other developers in a safe/sane way
 - developing your own first application within your project
 - how to - using Docker secrets and configs
+- https://docs.pytest.org/en/latest/
+
+### Notes and Links
+
+- https://djangostars.com/blog/configuring-django-settings-best-practices/
