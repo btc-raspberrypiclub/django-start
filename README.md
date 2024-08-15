@@ -40,7 +40,7 @@ Feel free to leave the values as they are for now if you are just practicing, if
 
 Next, build the local image for your container using the supplied code:
 
-    docker compose build
+    docker compose -f develop.yml build
 
 This step is very important and you wil lperform it many times as you develop your project.  Without the "build" step, the container image will not be up to date.
 
@@ -48,34 +48,37 @@ This step is very important and you wil lperform it many times as you develop yo
 
 We have a few options here, depending on what our end goal is. Starting with an empty `./app` directory (default) choose one of the following:
 
-- Create your project by simply bringing up the stack:
+- _SUGGESTED FOR BEGINNERS_ Create your project with the defaults.  This implies the inclusion of the extremely popular [Django Content Management System](https://docs.django-cms.org/en/latest/) - a complete content management system that can be compared to Wordpress, but better ;)  Execute the following command:
 
-    ```build-tools/devshell create```
+    ``` shell
+    build-tools/create cms
+    ```
 
-    After a few moments, you will see files show up in the `./app` directory.
+- BARE/VANILLA Create your project with only the Django core skelton.  Choose this option if you just want a bare-bones Django project with no predefined apps or customizations yet.  This is good for more advanced users - try the DjangoCMS version (above) if this is your first time or you do not yet know what Django is really all about.  Execute the following command:
 
-    Choose this option if you just want a bare-bones Django project with no predefined apps or customizations yet.  This is good for more advanced users - try the DjangoCMS version (below) if this is your first time or you do not yet know what Django is really about.
+    ``` shell
+    build-tools/create basic
+    ```
 
-- Or manually create your project with Django-admin:
+- Or go full manual-mode and create your project with the Django-admin command within the container:
 
     ```docker compose run --rm -it --entrypoint "django-admin startproject webengine ." webengine```
-    This allows the definition of other parameters and customizations at the time of creation.  This is basically the same as the option above, but this is how we can add more flags and custom options into the initial generation of the site code.
+    This option allows the definition of other parameters and customizations at the time of creation.  This is basically the same as the options above, but this is how we can add more flags and custom options into the initial generation of the site code while still using the preset volumes and helper scripts.
 
-- _SUGGESTED FOR BEGINNERS_ - manually create your project with the extremely popular [DjangoCMS](https://docs.django-cms.org/en/latest/) - a complete content management system that can be compared to Wordpress, but better ;) :
+After a few moments, you will see files show up in the `./app` and `./app/webengine` directories.
 
-    ```docker compose run --rm -it --entrypoint "djangocms webengine ." webengine```
 
-    You can safely ignore any warnings about "Requirements not installed" - they are already added from the `app/requirements.in` file to the master `requirements.txt` file for you. Learn more about the [requirements.txt](https://realpython.com/what-is-pip/#using-requirements-files) file.
+You can safely ignore any warnings about "Requirements not installed" - they are already added from the `app/requirements.in` file to the master `requirements.txt` file for you by the create script. You can learn more about the [requirements.txt](https://realpython.com/what-is-pip/#using-requirements-files) file.
 
-Now ensure that the project and it's components are properly shutdown:
+Now ensure that the project and it's components are properly shutdown and cleaned up after creation:
 
-    docker compose down
+    docker compose -f develop.yml down
 
-After this creation step, the files will be owned by `root` (default), and you will probably want to change this like so:
+After this creation step, the files will be owned by `root` (this is the default), and you will probably want to change this so that you can edit them like so:
 
     sudo chown -R ${UID:-1000}:${GID:-1000} app
 
-This will change the ownership back to yourself for easier access and editing.  NOTE: `$UID` is a Linux variable that contains the USER_ID for the current user (YOU) and the `$GID` is the current primary GROUP_ID of the current user (also YOU) - this is a shell thing, but it is always nice to remember such things.
+This will change the ownership back to yourself for easier access and editing.  NOTE: `$UID` is a Linux variable that contains the USER_ID for the current user (YOU) and the `$GID` is the current primary GROUP_ID of the current user (also YOU) - this is a shell convention, but it is always nice to remember such things.
 
 ### Decouple and re-initialize the repo as your own!
 
