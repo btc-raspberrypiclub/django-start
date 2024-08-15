@@ -62,7 +62,10 @@ We have a few options here, depending on what our end goal is. Starting with an 
 
 - Or go full manual-mode and create your project with the Django-admin command within the container:
 
-    ```docker compose run --rm -it --entrypoint "django-admin startproject webengine ." webengine```
+    ``` shell 
+    docker compose run --rm -it --entrypoint "django-admin startproject webengine ." webengine
+    ```
+
     This option allows the definition of other parameters and customizations at the time of creation.  This is basically the same as the options above, but this is how we can add more flags and custom options into the initial generation of the site code while still using the preset volumes and helper scripts.
 
 After a few moments, you will see files show up in the `./app` and `./app/webengine` directories.
