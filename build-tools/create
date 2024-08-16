@@ -48,5 +48,5 @@ docker compose -f develop.yml up -d
 docker compose -f develop.yml exec webengine ./manage.py createsuperuser
 
 echo "Your project and image have been created successfully."
-echo "You can now access the project at http://localhost:8000 - you can shut down your server with 'docker compose -f develop.yml down'"
+echo "You can now access the project at http://localhost:8080 - you can shut down your server with 'docker compose -f develop.yml down'"
 echo "Don't forget to add the new files to your git repository."
