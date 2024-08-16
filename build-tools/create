@@ -1,0 +1,52 @@
+#!/bin/bash
+
+PROJECT_TYPE=${1:-basic}
+
+
+# Only create the project if the files don't already exist
+if [ -d "./app/webengine" ]; then
+  echo "Project already exists in ./app/webengine.  Exiting..."
+  exit 1
+fi
+
+# Start just the database container in the background
+docker compose -f develop.yml up db -d
+
+echo "Creating a new Django ${PROJECT_TYPE} project in ./app/webengine"
+case ${PROJECT_TYPE} in
+  cms)
+    # Create the project (Django CMS)
+    docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "djangocms webengine ." webengine
+    ;;
+  basic)
+    # Create the project (basic Django)
+    docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "django-admin startproject webengine ." webengine
+    ;;
+  *)
+    echo "Please specify a valid project type: basic or cms"
+    exit 1
+    ;;
+esac
+
+# Set the owner of the new files to the current user
+docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "chown -R ${UID:-1000}:${GID:-1000} /usr/src/app" webengine 
+
+echo "Copying extra, pre-configured, default settings and urls to the project..."
+cat ./build-tools/src/extra_settings.py >> ./app/webengine/settings.py
+cat ./build-tools/src/extra_urls.py >> ./app/webengine/urls.py
+
+# Run the database/code migrations
+docker compose -f develop.yml run --rm -v ${PWD}/app:/usr/src/app --entrypoint "./manage.py migrate" webengine 
+
+# Build the new image
+docker compose -f develop.yml build webengine
+
+# Run the develpment server in the background
+docker compose -f develop.yml up -d
+
+# Create the superuser (will prompt the user for values)
+docker compose -f develop.yml exec webengine ./manage.py createsuperuser
+
+echo "Your project and image have been created successfully."
+echo "You can now access the project at http://localhost:8000 - you can shut down your server with 'docker compose -f develop.yml down'"
+echo "Don't forget to add the new files to your git repository."

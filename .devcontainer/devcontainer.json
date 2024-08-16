@@ -9,7 +9,7 @@
 		"ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {},
 		"ghcr.io/hspaans/devcontainer-features/pytest:1": {},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
-	}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -17,9 +17,10 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or the host.
 	// "forwardPorts": [5000, 5432],
+	"forwardPorts": [8080],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip install --user -r requirements.txt",
+	"postCreateCommand": "pip install --user -r requirements.txt"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

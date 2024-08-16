@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Start the containers with the development configuration, in the background
+docker compose -f develop.yml up -d
+
+# Start an interactive shell in the webengine container with the current directory mounted
+docker compose -f develop.yml exec webengine bash
+
+# Clean up after we are finished
+docker compose -f develop.yml exec webengine "chown -R ${UID:-1000}:${GID:-1000} /usr/src/app"
+
+# Shutdown everything
+docker compose -f develop.yml down
+
+git status
+echo "Don't forget to add any new files or changes to your git repository."
