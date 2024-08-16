@@ -43,7 +43,9 @@ cp .env_example .env
 
 The `.env` file is not tracked by Git, since it is specifically excluded via the `.gitignore` file. This is because the values in this file include "secrets" that you should never check in with your code.
 
-Feel free to leave the values as they are for now if you are just practicing, if you intend to deploy this project to a server that is available on the internet - you _will_ want to use more secure values.
+Feel free to leave the values as they are for now if you are just practicing,
+if you intend to deploy this project to a server that is available on the
+internet - you _will_ want to use more secure values.
 
 ### Build the Image
 
@@ -53,12 +55,12 @@ Next, build the local image for your container using the supplied code:
 docker compose -f develop.yml build
 ```
 
-
 This step is very important and you will perform it many times as you develop your project.  Without the "build" step, the container image will not be up to date.
 
 ### Generate the Basic Site File System
 
-We have a few options here, depending on what our end goal is. Starting with an empty `./app` directory (default) choose one of the following:
+We have a few options here, depending on what our end goal is. Starting with an
+empty `./app` directory (default) choose one of the following:
 
 - _SUGGESTED FOR BEGINNERS_ Create your project with the defaults.  This implies the inclusion of the extremely popular [Django Content Management System](https://docs.django-cms.org/en/latest/) - a complete content management system that can be compared to Wordpress, but better ;)  Execute the following command:
     ```sh
@@ -108,9 +110,16 @@ We can now delete the `.git` directory from the root of the project and this wil
 rm -rf .git
 ```
 
+
+```sh
+rm -rf .git
+```
+
 Remember to leave the `.gitignore` file as-is for now, however.
 
-Initialize `git` again with default settings and then commit all of the important files like so:
+Initialize `git` again with default settings and then commit all of the
+important files like so:
+
 
 ```sh
 git init
@@ -118,7 +127,11 @@ git add --all
 git commit -m 'Initial commit'
 ```
 
-The existing `.gitignore` file will help to insure that the proper files are excluded/included in this new repository.  Over time, you may need to modify it to include or exclude new files.  You can always see what is tracked in Git (and pending an add/commit) after an edit by executing `git status`.
+The existing `.gitignore` file will help to insure that the proper files are
+excluded/included in this new repository. Over time, you may need to modify it
+to include or exclude new files. You can always see what is tracked in Git
+(and pending an add/commit) after an edit by executing `git status`.
+
 
 ### Use a "real" Database
 
@@ -158,9 +171,19 @@ ALLOWED_HOSTS = ['*']
 
 Dont omit the apostrophes, they are important! This is a common mistake and will cause the site to fail and crash. You can also use the external IP of the server it is running on - but that is a more complex task for later on.
 
-This is not something that you will want to leave this way once you begin progressing toward a production intent, but it makes things considerably easier/simpler for the moment as you begin to develop your service the first time.
+Don't omit the apostrophes, they are important! This is a common mistake and
+will cause the site to fail and crash. You can also use the external IP of the
+server it is running on - but that is a more complex task for later on.
 
-With the stack running in development mode as it currently is, you can edit the `settings.py` file and it will immediately take effect without restarting the container or service.  Try refreshing the browser and you should see the initial site pop-up now.
+This is not something that you will want to leave this way once you begin
+progressing toward a production intent, but it makes things considerably
+easier/simpler for the moment as you begin to develop your service the
+first time.
+
+With the stack running in development mode as it currently is, you can edit the
+`settings.py` file and it will immediately take effect without restarting the
+container or service. Try refreshing the browser and you should see the initial
+site pop-up now.
 
 ### Create a Super User
 
@@ -170,13 +193,18 @@ Now, you will need to create a superuser to log in with.
 docker compose -f develop.yml run --rm -it --entrypoint "./manage.py createsuperuser" webengine
 ```
 
-It will prompt you for information to create the user account.  Fill in apropriate values for your usage, and then use them to log into the site within your browser.
+It will prompt you for information to create the user account. Fill in
+appropriate values for your usage, and then use them to log into the site
+within your browser.
 
 ### Start The Commit Habit
 
-Now that we have made some important changes to our code and tested them successfully, it is a good time to execute a quick `git status` in your project folder and see what files have changes that need to be committed to our repo.
+Now that we have made some important changes to our code and tested them
+successfully, it is a good time to execute a quick `git status` in your project
+folder and see what files have changes that need to be committed to our repo.
 
-Use `git` to add each changed file as well as a note that explains the changes, then commit each of them.
+Use `git` to add each changed file as well as a note that explains the changes,
+then commit each of them.
 
 ### Import to a Hosted Repo (optional - but suggested)
 
@@ -186,26 +214,35 @@ To import a project into GitHub, follow these steps:
 
 1. Create a new repository on GitHub. You can do this by clicking on the "[New](https://github.com/new)" button on the main page of your GitHub account.
 
-2. Give your repository a name and choose whether it should be public or private.
+2. Give your repository a name and choose whether it should be public or
+    private.
 
-3. Once the repository is created, copy the URL of the repository. It should look something like `https://github.com/your-username/your-repo.git`.
+3. Once the repository is created, copy the URL of the repository. It should
+    look something like `https://github.com/your-username/your-repo.git`.
 
-4. In your local project directory, initialize Git if you haven't already done so by running the command `git init`.
+4. In your local project directory, initialize Git if you haven't already done
+    so by running the command `git init`.
 
-5. Add all the files in your project to the Git repository by running the command `git add --all`.
+5. Add all the files in your project to the Git repository by running the
+    command `git add --all`.
 
 6. Commit the changes by running the command `git commit -m 'Initial commit'`.
 
-7. Set the remote repository URL by running the command `git remote add origin <repository-url>`, replacing `<repository-url>` with the URL you copied in step 3.
+7. Set the remote repository URL by running the command
+    `git remote add origin <repository-url>`, replacing `<repository-url>` with
+    the URL you copied in step 3.
 
 8. Push the code to the remote repository by running the command
     `git push --set-upstream origin master`.
 
 9. Enter your GitHub username and password when prompted.
 
-10. Refresh the GitHub repository page, and you should see your project files and commit history.
+10. Refresh the GitHub repository page, and you should see your project files
+    and commit history.
 
-That's it! Your project is now imported into GitHub. You can continue to make changes to your project locally and push them to the remote repository using Git commands.
+That's it! Your project is now imported into GitHub. You can continue to make
+changes to your project locally and push them to the remote repository using
+git commands.
 
 ### Enable the Django Debug Toolbar
 
