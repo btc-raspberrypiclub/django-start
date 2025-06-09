@@ -7,7 +7,7 @@
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
 		"ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {},
-		"ghcr.io/hspaans/devcontainer-features/pytest:1": {},
+		"ghcr.io/hspaans/devcontainer-features/pytest:2": {},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
 
